@@ -12,5 +12,7 @@ namespace OpenInsider.Core.LinkLayer
         void Close();
         bool Opened { get; }
         object Configuration { get; set; }
+
+        byte[] Transact(byte[] p);
     }
 }

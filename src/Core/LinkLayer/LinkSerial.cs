@@ -15,6 +15,12 @@ namespace OpenInsider.Core.LinkLayer
 
         [Category("Port settings")]
         public int BaudRate {get; set; }
+
+        [Category("Timeouts")]
+        public int ReadTimeout { get; set; }
+
+        [Category("Timeouts")]
+        public int WriteTimeout { get; set; }       
     }
 
     class LinkSerial : ILinkLayer, IDisposable
@@ -25,6 +31,8 @@ namespace OpenInsider.Core.LinkLayer
         {
             port.BaudRate = 115200;
             port.PortName = "COM19";
+            port.ReadTimeout = 50;
+            port.WriteTimeout = 50;
         }
 
         public void Dispose()
@@ -54,6 +62,8 @@ namespace OpenInsider.Core.LinkLayer
                 LinkSerialConfiguration ls = new LinkSerialConfiguration();
                 ls.PortName = port.PortName;
                 ls.BaudRate = port.BaudRate;
+                ls.ReadTimeout = port.ReadTimeout;
+                ls.WriteTimeout = port.WriteTimeout;
                 return ls;
             }
             set
@@ -67,9 +77,21 @@ namespace OpenInsider.Core.LinkLayer
                     port.Close();
 
                 port.PortName = ls.PortName;
-                port.BaudRate = ls.BaudRate;                
+                port.BaudRate = ls.BaudRate;
+                port.ReadTimeout = ls.ReadTimeout;
+                port.WriteTimeout = ls.WriteTimeout;
             }
         }
-       
+
+        public byte[] Transact(byte[] p)
+        {
+            port.BaseStream.Flush();
+            port.BaseStream.Write(p, 0, p.Length);
+
+            byte[] buffer = new byte[256];
+            int len = port.BaseStream.Read(buffer, 0, buffer.Length);
+            Array.Resize(ref buffer, len);
+            return buffer;
+        }
     }
 }

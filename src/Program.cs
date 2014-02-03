@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OpenInsider.Core;
+using OpenInsider.Core.LinkLayer;
+using System;
 using System.Windows.Forms;
 
 namespace OpenInsider
@@ -10,7 +12,12 @@ namespace OpenInsider
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Board.Link = new LinkSerial();
+
             Application.Run(new frmMain());
+
+            Board.Dispose();            
         }
     }
 }

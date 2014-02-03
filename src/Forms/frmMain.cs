@@ -1,4 +1,5 @@
-﻿using OpenInsider.Core.LinkLayer;
+﻿using OpenInsider.Core;
+using OpenInsider.Core.LinkLayer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,33 +31,34 @@ namespace OpenInsider
             }
         }
 
-        ILinkLayer Link;
+        
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (Link == null)
-                Link = new LinkSerial();
-
-            frmLinkConfig.Execute(Link);
+            frmLinkConfig.Execute();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (Link == null)
+            if (Board.Link == null)
                 throw new InvalidOperationException("Link is not defined!");
 
-            if (Link.Opened)
-                Link.Close();
+            if (Board.Link.Opened)
+                Board.Link.Close();
             else
-                Link.Open();
+                Board.Link.Open();
 
-            button2.Text = (Link.Opened) ? "Close" : "Open";
+            button2.Text = (Board.Link.Opened) ? "Close" : "Open";
         }
 
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if ((Link != null) && (Link is IDisposable))
-                (Link as IDisposable).Dispose();
+            
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Protocol.Detect();
         }
     }
 }

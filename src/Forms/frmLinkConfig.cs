@@ -1,4 +1,5 @@
-﻿using OpenInsider.Core.LinkLayer;
+﻿using OpenInsider.Core;
+using OpenInsider.Core.LinkLayer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,16 +20,16 @@ namespace OpenInsider
             InitializeComponent();
         }
 
-        public static bool Execute(ILinkLayer ll)
+        public static bool Execute()
         {
             using (frmLinkConfig frm = new frmLinkConfig())
             {
-                frm.Config.SelectedObject = ll.Configuration;
+                frm.Config.SelectedObject = Board.Link.Configuration;
 
                 if (frm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                     return false;
 
-                ll.Configuration = frm.Config.SelectedObject;
+                Board.Link.Configuration = frm.Config.SelectedObject;
             }
             return true;
         }
