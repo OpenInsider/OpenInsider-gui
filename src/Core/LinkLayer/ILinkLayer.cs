@@ -10,9 +10,12 @@ namespace OpenInsider.Core.LinkLayer
     {
         void Open();
         void Close();
-        bool Opened { get; }
+        bool IsOpen { get; }
         object Configuration { get; set; }
 
-        byte[] Transact(byte[] p);
+        int Read(byte[] data);
+        int Write(byte[] data);
+        void DiscardInput();
+        void DiscardOutput();
     }
 }

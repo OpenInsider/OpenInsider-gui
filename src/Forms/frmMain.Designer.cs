@@ -36,6 +36,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             ((System.ComponentModel.ISupportInitialize)(this.Watch)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,11 +51,11 @@
             this.Value,
             this.Address,
             this.Period});
-            this.Watch.Location = new System.Drawing.Point(117, 317);
+            this.Watch.Location = new System.Drawing.Point(12, 328);
             this.Watch.MultiSelect = false;
             this.Watch.Name = "Watch";
             this.Watch.RowHeadersVisible = false;
-            this.Watch.Size = new System.Drawing.Size(602, 169);
+            this.Watch.Size = new System.Drawing.Size(561, 169);
             this.Watch.TabIndex = 0;
             this.Watch.VirtualMode = true;
             this.Watch.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.Watch_CellValueNeeded);
@@ -110,11 +111,19 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Location = new System.Drawing.Point(617, 32);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(257, 324);
+            this.propertyGrid1.TabIndex = 4;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 525);
+            this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -137,6 +146,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.PropertyGrid propertyGrid1;
     }
 }
 

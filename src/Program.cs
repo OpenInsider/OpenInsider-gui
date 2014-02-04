@@ -13,7 +13,7 @@ namespace OpenInsider
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Board.Link = new LinkSerial();
+            Board.Link = new SynchronousSerialPort();
 
             Application.Run(new frmMain());
 

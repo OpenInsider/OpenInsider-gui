@@ -43,12 +43,12 @@ namespace OpenInsider
             if (Board.Link == null)
                 throw new InvalidOperationException("Link is not defined!");
 
-            if (Board.Link.Opened)
+            if (Board.Link.IsOpen)
                 Board.Link.Close();
             else
                 Board.Link.Open();
 
-            button2.Text = (Board.Link.Opened) ? "Close" : "Open";
+            button2.Text = (Board.Link.IsOpen) ? "Close" : "Open";
         }
 
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -58,7 +58,7 @@ namespace OpenInsider
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Protocol.Detect();
+            propertyGrid1.SelectedObject = Protocol.GetBoardInfo();
         }
     }
 }
