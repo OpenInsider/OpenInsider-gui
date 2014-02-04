@@ -10,6 +10,7 @@ namespace OpenInsider.Core
     public static class Board
     {
         public static ILinkLayer Link;
+        public static List<WatchedVar> ActiveWatches = new List<WatchedVar>();
 
         public static void Dispose()
         {

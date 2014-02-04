@@ -182,7 +182,7 @@ namespace OpenInsider.Core
             return bi;
         }
 
-        public static bool ReadMem32Ex(UInt32 Address, ref UInt32 value)
+        public static bool ReadMem32Ex(UInt32 Address, ref byte[] value)
         {
             byte[] data = Transact(new byte[] { 0xe2, (byte)(Address), (byte)(Address >> 8),  (byte)(Address >> 16),  (byte)(Address >> 24) }, 4);
 
@@ -192,12 +192,13 @@ namespace OpenInsider.Core
             if (data[1] != 0x00)
                 return false;
 
-            value = (UInt32)(data[2] | (data[3] << 8) | (data[4] << 16) | (data[5] << 24));
-
+            for (int i=0; i<4; i++)
+                value[i] = data[2 + i];
+            
             return true;
         }
 
-        public static bool ReadMem16Ex(UInt32 Address, ref UInt16 value)
+        public static bool ReadMem16Ex(UInt32 Address, ref byte[] value)
         {
             byte[] data = Transact(new byte[] { 0xe1, (byte)(Address), (byte)(Address >> 8), (byte)(Address >> 16), (byte)(Address >> 24) }, 2);
 
@@ -207,7 +208,9 @@ namespace OpenInsider.Core
             if (data[1] != 0x00)
                 return false;
 
-            value = (UInt16)(data[2] | (data[3] << 8));
+            for (int i = 0; i < 2; i++)
+                value[i] = data[2 + i];
+            
 
             return true;
         }
@@ -225,6 +228,19 @@ namespace OpenInsider.Core
             value = data[2];
 
             return true;
+        }
+
+
+        public static bool ReadWatch(WatchedVar v)
+        {
+            byte[] val = v.Value;
+
+            v.TimeStamp = DateTime.Now;
+            if (!Protocol.ReadMem32Ex(v.Address, ref val))
+                return false;
+            
+            v.Value = val;            
+            return true;            
         }
 
         public static bool Detect()

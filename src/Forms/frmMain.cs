@@ -17,7 +17,7 @@ namespace OpenInsider
         public frmMain()
         {
             InitializeComponent();
-            Watch.RowCount = 5;
+            Watch.RowCount = Board.ActiveWatches.Count;
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -35,12 +35,14 @@ namespace OpenInsider
 
         private void Watch_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
+            WatchedVar var = Board.ActiveWatches[e.RowIndex];
+
             switch (e.ColumnIndex)
             {
-                case 0: e.Value = "Variable"; break;
-                case 1: e.Value = "3.14159 mV"; break;
-                case 2: e.Value = "0x00000000"; break;
-                case 3: e.Value = "100 ms"; break;
+                case 0: e.Value = var.Name; break;
+                case 1: e.Value = var.GetFormattedValue(); break;
+                case 2: e.Value = string.Format("0x{0:X8}", var.Address); break;
+                case 3: e.Value = var.Period.ToString(); break;
             }
         }
 
@@ -79,11 +81,13 @@ namespace OpenInsider
             if (!Board.Link.IsOpen)
                 return;
 
-            UInt32 value = 0;
-            if (Protocol.ReadMem32Ex(0x2000001c, ref value))
-                label1.Text = string.Format("0x{0:X8}", value);
-            else
-                label1.Text = "?";
+            for (int i = 0; i < Board.ActiveWatches.Count; i++ )
+            {
+                if (Protocol.ReadWatch(Board.ActiveWatches[i]))
+                    Watch.UpdateCellValue(1, i);
+            }
+
+            
 
         }
 
