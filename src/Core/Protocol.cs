@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace OpenInsider.Core
 {
-
     public class TypeConverterVersion : TypeConverter
     {
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
@@ -89,16 +88,7 @@ namespace OpenInsider.Core
 
     public static class Protocol
     {
-        private static byte ComputeCRC(List<byte> msg)
-        {
-            byte crc = 0;
-            for (int i = 1; i < msg.Count; i++)
-                crc += msg[i];
-
-            return crc;
-        }
-
-        public static byte[] Transact(byte[] msg, int EstimatedSize)
+        private static byte[] Transact(byte[] msg, int EstimatedSize)
         {
             if ((Board.Link == null) || !Board.Link.IsOpen)
                 throw new InvalidOperationException("Link not open");
@@ -172,7 +162,11 @@ namespace OpenInsider.Core
             if (frame.Count != TotalSize)
                 return new byte[0];                // No valid frame received
 
-            if (ComputeCRC(frame) != 0x00)
+            crc = 0;
+            for (int i = 1; i < frame.Count; i++)
+                crc += frame[i];
+
+            if (crc != 0x00)
                 return new byte[0];                // bad CRC
 
             return frame.ToArray();
@@ -186,6 +180,51 @@ namespace OpenInsider.Core
                 bi = BoardInfo.Parse(Transact(new byte[] { 0xc8 }, 6));
 
             return bi;
+        }
+
+        public static bool ReadMem32Ex(UInt32 Address, ref UInt32 value)
+        {
+            byte[] data = Transact(new byte[] { 0xe2, (byte)(Address), (byte)(Address >> 8),  (byte)(Address >> 16),  (byte)(Address >> 24) }, 4);
+
+            if (data.Length < 3)
+                return false;
+
+            if (data[1] != 0x00)
+                return false;
+
+            value = (UInt32)(data[2] | (data[3] << 8) | (data[4] << 16) | (data[5] << 24));
+
+            return true;
+        }
+
+        public static bool ReadMem16Ex(UInt32 Address, ref UInt16 value)
+        {
+            byte[] data = Transact(new byte[] { 0xe1, (byte)(Address), (byte)(Address >> 8), (byte)(Address >> 16), (byte)(Address >> 24) }, 2);
+
+            if (data.Length < 3)
+                return false;
+
+            if (data[1] != 0x00)
+                return false;
+
+            value = (UInt16)(data[2] | (data[3] << 8));
+
+            return true;
+        }
+
+        public static bool ReadMem8Ex(UInt32 Address, ref byte value)
+        {
+            byte[] data = Transact(new byte[] { 0xe0, (byte)(Address), (byte)(Address >> 8), (byte)(Address >> 16), (byte)(Address >> 24) }, 1);
+
+            if (data.Length < 3)
+                return false;
+
+            if (data[1] != 0x00)
+                return false;
+
+            value = data[2];
+
+            return true;
         }
 
         public static bool Detect()

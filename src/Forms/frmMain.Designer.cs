@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.Watch = new System.Windows.Forms.DataGridView();
             this.Variable = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -37,6 +38,8 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.label1 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.Watch)).BeginInit();
             this.SuspendLayout();
             // 
@@ -113,16 +116,34 @@
             // 
             // propertyGrid1
             // 
+            this.propertyGrid1.CommandsVisibleIfAvailable = false;
             this.propertyGrid1.Location = new System.Drawing.Point(617, 32);
             this.propertyGrid1.Name = "propertyGrid1";
             this.propertyGrid1.Size = new System.Drawing.Size(257, 324);
             this.propertyGrid1.TabIndex = 4;
+            this.propertyGrid1.ToolbarVisible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(370, 180);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "label1";
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 1;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(896, 525);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -131,8 +152,10 @@
             this.Name = "frmMain";
             this.Text = "OpenInsider";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
+            this.Load += new System.EventHandler(this.frmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.Watch)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -147,6 +170,8 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

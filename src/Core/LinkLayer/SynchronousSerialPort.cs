@@ -376,6 +376,8 @@ namespace OpenInsider.Core.LinkLayer
             }
         }
 
+        public event EventHandler ConnectionChanged;
+
         public void Open()
         {            
             _hFile = Native.CreateFile(@"\\.\" + _config.PortName,AccessMask.GENERIC_READWRITE, 0, IntPtr.Zero, Disposition.OPEN_EXISTING, FileFlags.FILE_ATTRIBUTE_NORMAL, IntPtr.Zero);
@@ -384,6 +386,9 @@ namespace OpenInsider.Core.LinkLayer
                 throw new IOException();
 
             UpdateConfig();
+
+            if (ConnectionChanged != null)
+                ConnectionChanged(this, EventArgs.Empty);
         }
 
         private void UpdateConfig()
@@ -427,6 +432,9 @@ namespace OpenInsider.Core.LinkLayer
         {
             _hFile.Close();
             _hFile = null;
+
+            if (ConnectionChanged != null)
+                ConnectionChanged(this, EventArgs.Empty);
         }
 
         public unsafe int Write(byte[] array)

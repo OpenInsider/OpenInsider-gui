@@ -20,6 +20,19 @@ namespace OpenInsider
             Watch.RowCount = 5;
         }
 
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            Board.Link.ConnectionChanged += Link_ConnectionChanged;
+
+            Link_ConnectionChanged(Board.Link, EventArgs.Empty);
+        }
+
+        void Link_ConnectionChanged(object sender, EventArgs e)
+        {
+            button2.Text = (Board.Link.IsOpen) ? "Close" : "Open";
+            button2.BackColor = (Board.Link.IsOpen) ? Color.LightPink : Color.LightGreen;
+        }
+
         private void Watch_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
             switch (e.ColumnIndex)
@@ -48,7 +61,7 @@ namespace OpenInsider
             else
                 Board.Link.Open();
 
-            button2.Text = (Board.Link.IsOpen) ? "Close" : "Open";
+            
         }
 
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -60,5 +73,20 @@ namespace OpenInsider
         {
             propertyGrid1.SelectedObject = Protocol.GetBoardInfo();
         }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (!Board.Link.IsOpen)
+                return;
+
+            UInt32 value = 0;
+            if (Protocol.ReadMem32Ex(0x2000001c, ref value))
+                label1.Text = string.Format("0x{0:X8}", value);
+            else
+                label1.Text = "?";
+
+        }
+
+        
     }
 }

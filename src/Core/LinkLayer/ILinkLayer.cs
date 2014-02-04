@@ -17,5 +17,7 @@ namespace OpenInsider.Core.LinkLayer
         int Write(byte[] data);
         void DiscardInput();
         void DiscardOutput();
+
+        event EventHandler ConnectionChanged;
     }
 }
