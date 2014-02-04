@@ -1,10 +1,12 @@
-﻿using Microsoft.Win32.SafeHandles;
+﻿using Microsoft.Win32;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Text;
 
 namespace OpenInsider.Core.LinkLayer
@@ -278,13 +280,108 @@ namespace OpenInsider.Core.LinkLayer
     }
     #endregion
 
+    #region Converters
+    public class SerialPortConfig_PortNameConverter : StringConverter
+    {
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+        {
+            return false;
+        }
+
+        public override System.ComponentModel.TypeConverter.StandardValuesCollection
+               GetStandardValues(ITypeDescriptorContext context)
+        {
+            using (RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DEVICEMAP\SERIALCOMM", false))
+                return new StandardValuesCollection(rk.GetValueNames().Select(x => (string)rk.GetValue(x)).ToArray());
+        }
+    }
+
+    public class SerialPortConfig_BaudRateConverter : UInt32Converter
+    {
+        static readonly UInt32[] baudrates = new UInt32[] { 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600 };
+
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+        {
+            return false;
+        }
+
+        public override System.ComponentModel.TypeConverter.StandardValuesCollection
+               GetStandardValues(ITypeDescriptorContext context)
+        {
+            return new StandardValuesCollection(baudrates);
+        }
+    }
+
+    public class SerialPortConfig_StopBitsConverter : ByteConverter
+    {
+        static readonly Byte[] stopbits = new Byte[] { 1, 2 };
+
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override System.ComponentModel.TypeConverter.StandardValuesCollection
+               GetStandardValues(ITypeDescriptorContext context)
+        {
+            return new StandardValuesCollection(stopbits);
+        }
+    }
+
+    public class SerialPortConfig_DataBitsConverter : ByteConverter
+    {
+        static readonly Byte[] databits = new Byte[] { 7, 8 };
+
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override System.ComponentModel.TypeConverter.StandardValuesCollection
+               GetStandardValues(ITypeDescriptorContext context)
+        {
+            return new StandardValuesCollection(databits);
+        }
+    }
+    #endregion
+
     public class SerialPortConfig 
     {
-        [Category("Port settings")]
+        [Category("Connection")]
+        [TypeConverter(typeof(SerialPortConfig_PortNameConverter))]
         public string PortName { get; set; }
 
         [Category("Port settings")]
+        [TypeConverter(typeof(SerialPortConfig_BaudRateConverter))]
         public uint BaudRate { get; set; }
+
+        [Category("Port settings")]
+        [TypeConverter(typeof(SerialPortConfig_DataBitsConverter))]
+        public byte DataBits { get; set; }
+
+        [Category("Port settings")]
+        [TypeConverter(typeof(SerialPortConfig_StopBitsConverter))]
+        public byte StopBits { get; set; }
 
         [Category("Timeouts")]
         public int ReadIntervalTimeout { get; set; }
@@ -306,6 +403,8 @@ namespace OpenInsider.Core.LinkLayer
             get { return new SerialPortConfig() {
                     PortName = "COM19",
                     BaudRate = 115200,
+                    DataBits = 8,
+                    StopBits = 1,
                     ReadIntervalTimeout = 40,
                     ReadTimeoutMultiplier = 40,
                     ReadTimeoutConstant = 50,
@@ -405,9 +504,9 @@ namespace OpenInsider.Core.LinkLayer
 
             dcb.DCBlength = (uint)Marshal.SizeOf(dcb);
             dcb.BaudRate = _config.BaudRate;
-            dcb.ByteSize = 8;
+            dcb.ByteSize = _config.DataBits;
             dcb.Parity = 0;
-            dcb.StopBits = 0;
+            dcb.StopBits = (byte)((_config.StopBits == 1) ? 0 : 2);
 
             if (!Native.SetCommState(_hFile, ref dcb))
                 throw new IOException();

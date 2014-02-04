@@ -20,19 +20,35 @@ namespace OpenInsider
             InitializeComponent();
         }
 
+        void ch_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Config.Refresh();
+        }
+
         public static bool Execute()
         {
             using (frmLinkConfig frm = new frmLinkConfig())
             {
                 frm.Config.SelectedObject = Board.Link.Configuration;
+                INotifyPropertyChanged ch = Board.Link.Configuration as INotifyPropertyChanged;
 
-                if (frm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                if (ch != null)
+                    ch.PropertyChanged += frm.ch_PropertyChanged;
+
+                DialogResult dr = frm.ShowDialog();
+
+                if (ch != null)
+                    ch.PropertyChanged -= frm.ch_PropertyChanged;
+
+                if (dr != DialogResult.OK)
                     return false;
 
                 Board.Link.Configuration = frm.Config.SelectedObject;
             }
             return true;
         }
+
+        
 
     }
 }

@@ -37,7 +37,7 @@
             // Cancel
             // 
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(8, 284);
+            this.Cancel.Location = new System.Drawing.Point(6, 360);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 0;
@@ -47,7 +47,7 @@
             // Ok
             // 
             this.Ok.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Ok.Location = new System.Drawing.Point(170, 284);
+            this.Ok.Location = new System.Drawing.Point(168, 360);
             this.Ok.Name = "Ok";
             this.Ok.Size = new System.Drawing.Size(75, 23);
             this.Ok.TabIndex = 1;
@@ -56,7 +56,7 @@
             // 
             // Test
             // 
-            this.Test.Location = new System.Drawing.Point(89, 284);
+            this.Test.Location = new System.Drawing.Point(87, 360);
             this.Test.Name = "Test";
             this.Test.Size = new System.Drawing.Size(75, 23);
             this.Test.TabIndex = 6;
@@ -65,10 +65,14 @@
             // 
             // Config
             // 
+            this.Config.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.Config.Location = new System.Drawing.Point(12, 12);
             this.Config.Name = "Config";
-            this.Config.Size = new System.Drawing.Size(223, 266);
+            this.Config.Size = new System.Drawing.Size(223, 342);
             this.Config.TabIndex = 7;
+            this.Config.ToolbarVisible = false;
             // 
             // frmLinkConfig
             // 
@@ -76,7 +80,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(247, 319);
+            this.ClientSize = new System.Drawing.Size(247, 395);
             this.Controls.Add(this.Config);
             this.Controls.Add(this.Test);
             this.Controls.Add(this.Ok);

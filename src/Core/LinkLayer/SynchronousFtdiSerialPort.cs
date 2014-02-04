@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -34,7 +35,7 @@ namespace OpenInsider.Core.LinkLayer
         DeviceListNotReady,
     }
 
-    internal enum FtdiDevType : uint
+    public enum FtdiDevType : uint
     {
         DeviceBM,
         DeviceAM,
@@ -259,8 +260,8 @@ namespace OpenInsider.Core.LinkLayer
         [DllImport("FTD2XX.dll", EntryPoint = "FT_GetDeviceInfoList", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern FtdiStatus GetDeviceInfoList([Out] FtdiDevNode[] devicelist, ref UInt32 numdevs);
 
-        [DllImport("FTD2XX.dll", EntryPoint = "FT_GetDeviceInfoDetail", CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern FtdiStatus GetDeviceInfoDetail(UInt32 dwIndex, out UInt32 lpdwFlags, out UInt32 lpdwType, out UInt32 lpdwID, out UInt32 lpdwLocId, StringBuilder lpSerialNumber, StringBuilder lpDescription, out IntPtr pftHandle);
+        [DllImport("FTD2XX.dll", EntryPoint = "FT_GetDeviceInfoDetail", CharSet = CharSet.Ansi, SetLastError = true)]
+        internal static extern FtdiStatus GetDeviceInfoDetail(UInt32 dwIndex, out UInt32 lpdwFlags, out FtdiDevType lpdwType, out UInt32 lpdwID, out UInt32 lpdwLocId, [Out]  StringBuilder lpSerialNumber, [Out] StringBuilder lpDescription, out IntPtr pftHandle);
 
         [DllImport("FTD2XX.dll", EntryPoint = "FT_GetComPortNumber", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern FtdiStatus GetComPortNumber(IntPtr ftHandle, out int lpdwComPortNumber);
@@ -405,10 +406,58 @@ namespace OpenInsider.Core.LinkLayer
          * */
     }
 
-    public class FtdiSerialPortConfig
+    public class FtdiSerialPortConfig_IndexConverter : UInt32Converter
     {
-        [Category("Port settings")]
-        public string PortName { get; set; }
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+
+        public override System.ComponentModel.TypeConverter.StandardValuesCollection
+               GetStandardValues(ITypeDescriptorContext context)
+        {
+            UInt32 n;
+            if (FtdiNative.CreateDeviceInfoList(out n) != FtdiStatus.Ok)
+                throw new IOException();
+
+            List<UInt32> lst = new List<uint>();
+            for (UInt32 i = 0; i < n; i++)
+                lst.Add(i);
+            
+            return new StandardValuesCollection(lst);            
+        }
+    }
+
+    public class FtdiSerialPortConfig : INotifyPropertyChanged
+    {
+        private UInt32 aPortIndex = unchecked ((UInt32)(-1));
+
+        [Category("Connection")]
+        [TypeConverter(typeof(FtdiSerialPortConfig_IndexConverter))]
+        public uint Index { get { return aPortIndex; } set { SetSerial(value); } }
+
+        [Category("Connection")]
+        public string SerialNumber { get; private set; }
+
+        [Category("Connection")]
+        public string Description { get; private set; }
+
+        [Category("Connection")]
+        public string Location { get; private set; }
+
+        [Category("Connection")]
+        public FtdiDevType Type { get; private set; }
+
+        [Category("Connection")]
+        public string Id { get; private set; }
+
+        [Category("Connection")]
+        public string Port { get; private set; }
 
         [Category("Port settings")]
         public uint BaudRate { get; set; }
@@ -431,7 +480,7 @@ namespace OpenInsider.Core.LinkLayer
             {
                 return new FtdiSerialPortConfig()
                 {
-                    PortName = "COM16",
+                    Index = 0,
                     BaudRate = 115200,
                     DataBits = 8,
                     StopBits = 1,
@@ -439,6 +488,45 @@ namespace OpenInsider.Core.LinkLayer
                     WriteTimeout = 40,
                 };
             }
+        }
+            
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyChange([CallerMemberName] String propertyName = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void SetSerial(UInt32 idx)
+        {
+            UInt32 n;
+            if (FtdiNative.CreateDeviceInfoList(out n) != FtdiStatus.Ok)
+                throw new IOException();
+
+            if (idx >= n)
+                throw new IOException();
+
+            aPortIndex = idx;
+
+            uint flags;
+            FtdiDevType typ;
+            uint id;
+            uint locid;
+            IntPtr handle;
+            StringBuilder serno = new StringBuilder(16);
+            StringBuilder desc = new StringBuilder(64);
+
+            FtdiStatus stat = FtdiNative.GetDeviceInfoDetail(idx, out flags, out typ, out id, out locid, serno, desc, out handle);            
+
+
+            SerialNumber = serno.ToString();
+            Description = desc.ToString();
+            Id = "VID=0x"+(id >> 16).ToString("X4") + "/PID=0x" + (id & 0xFFFF).ToString("X4");
+            Location = "0x"+locid.ToString("X8");
+            Type = typ;
+            Port = "COMx";
+            NotifyChange("Id");
         }
     }
 
