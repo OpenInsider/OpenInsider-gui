@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="src\Core\Board.cs" />
     <Compile Include="src\Core\LinkLayer\ILinkLayer.cs" />
+    <Compile Include="src\Core\LinkLayer\SynchronousFtdiSerialPort.cs" />
     <Compile Include="src\Core\LinkLayer\SynchronousSerialPort.cs" />
     <Compile Include="src\Core\Protocol.cs" />
     <Compile Include="src\Core\WatchedVar.cs" />
