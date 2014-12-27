@@ -8,8 +8,10 @@ namespace OpenInsider.Core
 {
     public enum WatchFormat
     {
-        FormatArray = 0,
-        FormatUInt32 = 1,
+        Array = 0,
+        UnsignedInt = 1,
+		SignedInt = 2,
+		Float = 3,
     }
     public class WatchedVar
     {
@@ -25,18 +27,30 @@ namespace OpenInsider.Core
         {
             switch (Format)
             {
-                case WatchFormat.FormatUInt32:
-                    return string.Format("0x{0:X8}", AsUInt32());
+				default:
+				case WatchFormat.Array:
+					/* array is fall back encoding when any other fails */
+					break;					
 
-                default:
-                case WatchFormat.FormatArray:
-                    return string.Join(":", Value.Select(x => x.ToString("X2")));
+				case WatchFormat.UnsignedInt:
+					if ((Size > 0) && (Size <= 8))
+						return string.Format("0x{0:X"+(Size*2).ToString()+"}", AsUInt());
+
+					/* Fall back to array */
+					break;
             }
+
+			return string.Join(":", Value.Select(x => x.ToString("X2")));
         }
 
-        public UInt32 AsUInt32()
+        public UInt64 AsUInt()
         {
-            return (UInt32)(Value[0] | (Value[1] << 8) | (Value[2] << 16) | (Value[3] << 24));
+			UInt64 result = 0;
+
+			for (int i = 0 ; i < Value.Length ; i++)
+				result |= (UInt64)Value[i] << i * 8;
+
+            return result;
         }
 
 

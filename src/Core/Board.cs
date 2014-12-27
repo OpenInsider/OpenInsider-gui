@@ -22,31 +22,28 @@ namespace OpenInsider.Core
 		public static void Poll()
 		{
 			for (int i = 0 ; i < Watches.Count ; i++)
-			{
 				if (Protocol.ReadWatch(Watches[i]))
-				{
-					if (WatchesUpdated != null)
-						WatchesUpdated(null, i);
-				}					
-			}
+					WatchUpdated(i);
 		}
 
 		public static void WatchAdd(WatchedVar var)
 		{
 			Watches.Add(var);
 
-			if (WatchesUpdated != null)
-				WatchesUpdated(null, -1);
+			WatchUpdated(-1);
 		}
 
 		public static void WatchRemove(int index)
 		{
 			Watches.RemoveAt(index);
 
-			if (WatchesUpdated != null)
-				WatchesUpdated(null, -1);
+			WatchUpdated(-1);
 		}
 
-
-    }
+		public static void WatchUpdated(int index)
+		{
+			if (WatchesUpdated != null)
+				WatchesUpdated(null, index);
+		}
+	}
 }

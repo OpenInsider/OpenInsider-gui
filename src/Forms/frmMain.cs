@@ -122,12 +122,20 @@ namespace OpenInsider
 
 		private void btnNewWatch_Click(object sender, EventArgs e)
 		{
-
+			WatchedVar watch = new WatchedVar();
+			if (frmWatch.Execute(ref watch))
+				Board.WatchAdd(watch);
 		}
 
 		private void btnEditWatch_Click(object sender, EventArgs e)
 		{
+			foreach (DataGridViewRow r in Watch.SelectedRows)
+			{
+				WatchedVar watch = Board.Watches[r.Index];
 
+				if (frmWatch.Execute(ref watch))
+					Board.WatchUpdated(r.Index);
+			}
 		}
         
     }
