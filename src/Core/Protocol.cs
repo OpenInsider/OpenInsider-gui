@@ -230,6 +230,22 @@ namespace OpenInsider.Core
             return true;
         }
 
+		public static bool ReadMemEx(UInt32 Address, ref byte[] value)
+		{
+			byte[] data = Transact(new byte[] { 0x04, 0x05, (byte)value.Length, (byte)(Address), (byte)(Address >> 8), (byte)(Address >> 16), (byte)(Address >> 24) }, value.Length);
+
+			if (data.Length < 3)
+				return false;
+
+			if (data[1] != 0x00)
+				return false;
+
+			for (int i = 0 ; i < value.Length ; i++)
+				value[i] = data[2 + i];
+
+			return true;
+		}
+
 
         public static bool ReadWatch(WatchedVar v)
         {
@@ -253,6 +269,11 @@ namespace OpenInsider.Core
 			else if (val.Length == 1)
 			{
 				if (!Protocol.ReadMem8Ex(v.Address, ref val[0]))
+					return false;
+			}
+			else if (val.Length < 128) /* TODO check board info for tx buffer size */
+			{
+				if (!Protocol.ReadMemEx(v.Address, ref val))
 					return false;
 			}
 			else
