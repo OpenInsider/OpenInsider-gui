@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Files;
 
 namespace OpenInsider.Core
 {
     public static class Board
     {
+		public static ElfFile ProjectFile = null;
+
         public static ILinkLayer Link;
         public static List<WatchedVar> Watches = new List<WatchedVar>();
 		public static event EventHandler<int> WatchesUpdated;

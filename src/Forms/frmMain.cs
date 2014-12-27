@@ -15,7 +15,7 @@ namespace OpenInsider
 {
     public partial class frmMain : Form
     {
-		public ElfFile elf = null;
+		
 
         public frmMain()
         {
@@ -105,7 +105,7 @@ namespace OpenInsider
 				if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
 					return;
 
-				elf = new ElfFile(ofd.FileName);
+				Board.ProjectFile = new ElfFile(ofd.FileName);
 
 				MessageBox.Show("Load ELF OK");
 			}

@@ -12,7 +12,9 @@ namespace OpenInsider.Core
         UnsignedInt = 1,
 		SignedInt = 2,
 		Float = 3,
+		Enum = 4,
     }
+
     public class WatchedVar
     {
         public string Name { get; set; }         // variable name
@@ -57,7 +59,5 @@ namespace OpenInsider.Core
 
             return result;
         }
-
-
     }
 }
