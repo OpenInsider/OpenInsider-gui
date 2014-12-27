@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Files;
+using System.Windows.Forms;
 
 namespace OpenInsider.Core
 {
@@ -16,14 +17,24 @@ namespace OpenInsider.Core
         public static List<WatchedVar> Watches = new List<WatchedVar>();
 		public static event EventHandler<int> WatchesUpdated;
 
+		static Board()
+		{
+			Application.Idle += IdleLoop;
+		}		
+
         public static void Dispose()
         {
+			Application.Idle -= IdleLoop;
+
             if ((Link != null) && (Link is IDisposable))
                 (Link as IDisposable).Dispose();
         }
 
-		public static void Poll()
+		static void IdleLoop(object sender, EventArgs e)
 		{
+			if ((Link == null) || (!Link.IsOpen))
+				return;
+
 			for (int i = 0 ; i < Watches.Count ; i++)
 				if (Protocol.ReadWatch(Watches[i]))
 					WatchUpdated(i);

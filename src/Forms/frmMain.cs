@@ -29,6 +29,8 @@ namespace OpenInsider
 
             Link_ConnectionChanged(Board.Link, EventArgs.Empty);
 			Board_ActiveWatchesUpdated(null, -1);
+
+			
 			
         }
 
@@ -89,13 +91,6 @@ namespace OpenInsider
             propertyGrid1.SelectedObject = Protocol.GetBoardInfo();
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            if (!Board.Link.IsOpen)
-                return;
-
-			Board.Poll();
-        }
 
 		private void button4_Click(object sender, EventArgs e)
 		{

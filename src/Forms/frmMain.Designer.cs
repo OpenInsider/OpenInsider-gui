@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.components = new System.ComponentModel.Container();
 			this.Watch = new System.Windows.Forms.DataGridView();
 			this.Variable = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -38,7 +37,6 @@
 			this.button2 = new System.Windows.Forms.Button();
 			this.button3 = new System.Windows.Forms.Button();
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.button4 = new System.Windows.Forms.Button();
 			this.btnRemoveWatch = new System.Windows.Forms.Button();
 			this.btnNewWatch = new System.Windows.Forms.Button();
@@ -127,12 +125,6 @@
 			this.propertyGrid1.TabIndex = 4;
 			this.propertyGrid1.ToolbarVisible = false;
 			// 
-			// timer1
-			// 
-			this.timer1.Enabled = true;
-			this.timer1.Interval = 1;
-			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-			// 
 			// button4
 			// 
 			this.button4.Location = new System.Drawing.Point(339, 41);
@@ -206,8 +198,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
-        private System.Windows.Forms.Timer timer1;
+		private System.Windows.Forms.PropertyGrid propertyGrid1;
 		private System.Windows.Forms.Button button4;
 		private System.Windows.Forms.Button btnRemoveWatch;
 		private System.Windows.Forms.Button btnNewWatch;
