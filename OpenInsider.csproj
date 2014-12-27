@@ -74,6 +74,7 @@
     <Compile Include="src\Core\LinkLayer\SynchronousFtdiSerialPort.cs" />
     <Compile Include="src\Core\LinkLayer\SynchronousSerialPort.cs" />
     <Compile Include="src\Core\Protocol.cs" />
+    <Compile Include="src\Core\TextFormats.cs" />
     <Compile Include="src\Core\WatchedVar.cs" />
     <Compile Include="src\Forms\frmLinkConfig.cs">
       <SubType>Form</SubType>

@@ -63,8 +63,8 @@ namespace OpenInsider
             {
                 case 0: e.Value = var.Name; break;
                 case 1: e.Value = var.GetFormattedValue(); break;
-                case 2: e.Value = string.Format("0x{0:X8}", var.Address); break;
-                case 3: e.Value = var.Period.ToString(); break;
+                case 2: e.Value = TextFormats.AddressToString(var.Address); break;
+                case 3: e.Value = TextFormats.PeriodToString(var.Period); break;
             }
         }        
 
