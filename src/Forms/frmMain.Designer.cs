@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			this.Watch = new System.Windows.Forms.DataGridView();
 			this.Variable = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -38,10 +39,13 @@
 			this.button3 = new System.Windows.Forms.Button();
 			this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
 			this.button4 = new System.Windows.Forms.Button();
-			this.btnRemoveWatch = new System.Windows.Forms.Button();
-			this.btnNewWatch = new System.Windows.Forms.Button();
-			this.btnEditWatch = new System.Windows.Forms.Button();
+			this.WatchMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.miWatchNew = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.miWatchDelete = new System.Windows.Forms.ToolStripMenuItem();
+			this.miWatchEdit = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.Watch)).BeginInit();
+			this.WatchMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// Watch
@@ -55,6 +59,7 @@
             this.Value,
             this.Address,
             this.Period});
+			this.Watch.ContextMenuStrip = this.WatchMenuStrip;
 			this.Watch.Location = new System.Drawing.Point(21, 269);
 			this.Watch.MultiSelect = false;
 			this.Watch.Name = "Watch";
@@ -135,44 +140,47 @@
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.button4_Click);
 			// 
-			// btnRemoveWatch
+			// WatchMenuStrip
 			// 
-			this.btnRemoveWatch.Location = new System.Drawing.Point(588, 386);
-			this.btnRemoveWatch.Name = "btnRemoveWatch";
-			this.btnRemoveWatch.Size = new System.Drawing.Size(75, 23);
-			this.btnRemoveWatch.TabIndex = 6;
-			this.btnRemoveWatch.Text = "DelWatch";
-			this.btnRemoveWatch.UseVisualStyleBackColor = true;
-			this.btnRemoveWatch.Click += new System.EventHandler(this.btnRemoveWatch_Click);
+			this.WatchMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miWatchNew,
+            this.toolStripSeparator1,
+            this.miWatchDelete,
+            this.miWatchEdit});
+			this.WatchMenuStrip.Name = "WatchMenuStrip";
+			this.WatchMenuStrip.Size = new System.Drawing.Size(158, 76);
 			// 
-			// btnNewWatch
+			// miWatchNew
 			// 
-			this.btnNewWatch.Location = new System.Drawing.Point(588, 415);
-			this.btnNewWatch.Name = "btnNewWatch";
-			this.btnNewWatch.Size = new System.Drawing.Size(75, 23);
-			this.btnNewWatch.TabIndex = 7;
-			this.btnNewWatch.Text = "NewWatch";
-			this.btnNewWatch.UseVisualStyleBackColor = true;
-			this.btnNewWatch.Click += new System.EventHandler(this.btnNewWatch_Click);
+			this.miWatchNew.Name = "miWatchNew";
+			this.miWatchNew.Size = new System.Drawing.Size(157, 22);
+			this.miWatchNew.Text = "New watch ...";
+			this.miWatchNew.Click += new System.EventHandler(this.miWatchNew_Click);
 			// 
-			// btnEditWatch
+			// toolStripSeparator1
 			// 
-			this.btnEditWatch.Location = new System.Drawing.Point(588, 444);
-			this.btnEditWatch.Name = "btnEditWatch";
-			this.btnEditWatch.Size = new System.Drawing.Size(75, 23);
-			this.btnEditWatch.TabIndex = 8;
-			this.btnEditWatch.Text = "EditWatch";
-			this.btnEditWatch.UseVisualStyleBackColor = true;
-			this.btnEditWatch.Click += new System.EventHandler(this.btnEditWatch_Click);
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(154, 6);
+			// 
+			// miWatchDelete
+			// 
+			this.miWatchDelete.Name = "miWatchDelete";
+			this.miWatchDelete.Size = new System.Drawing.Size(157, 22);
+			this.miWatchDelete.Text = "Delete this watch";
+			this.miWatchDelete.Click += new System.EventHandler(this.miWatchDelete_Click);
+			// 
+			// miWatchEdit
+			// 
+			this.miWatchEdit.Name = "miWatchEdit";
+			this.miWatchEdit.Size = new System.Drawing.Size(157, 22);
+			this.miWatchEdit.Text = "Edit this watch ";
+			this.miWatchEdit.Click += new System.EventHandler(this.miWatchEdit_Click);
 			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(896, 525);
-			this.Controls.Add(this.btnEditWatch);
-			this.Controls.Add(this.btnNewWatch);
-			this.Controls.Add(this.btnRemoveWatch);
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.propertyGrid1);
 			this.Controls.Add(this.button3);
@@ -184,6 +192,7 @@
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
 			this.Load += new System.EventHandler(this.frmMain_Load);
 			((System.ComponentModel.ISupportInitialize)(this.Watch)).EndInit();
+			this.WatchMenuStrip.ResumeLayout(false);
 			this.ResumeLayout(false);
 
         }
@@ -200,9 +209,11 @@
         private System.Windows.Forms.Button button3;
 		private System.Windows.Forms.PropertyGrid propertyGrid1;
 		private System.Windows.Forms.Button button4;
-		private System.Windows.Forms.Button btnRemoveWatch;
-		private System.Windows.Forms.Button btnNewWatch;
-		private System.Windows.Forms.Button btnEditWatch;
+		private System.Windows.Forms.ContextMenuStrip WatchMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem miWatchNew;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem miWatchDelete;
+		private System.Windows.Forms.ToolStripMenuItem miWatchEdit;
     }
 }
 

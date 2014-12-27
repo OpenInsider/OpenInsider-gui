@@ -106,7 +106,15 @@ namespace OpenInsider
 			}
 		}
 
-		private void btnRemoveWatch_Click(object sender, EventArgs e)
+
+		private void miWatchNew_Click(object sender, EventArgs e)
+		{
+			WatchedVar watch = new WatchedVar();
+			if (frmWatch.Execute(ref watch))
+				Board.WatchAdd(watch);
+		}
+
+		private void miWatchDelete_Click(object sender, EventArgs e)
 		{
 			if (Watch.SelectedRows.Count != 1)
 				return;
@@ -115,14 +123,7 @@ namespace OpenInsider
 				Board.WatchRemove(r.Index);
 		}
 
-		private void btnNewWatch_Click(object sender, EventArgs e)
-		{
-			WatchedVar watch = new WatchedVar();
-			if (frmWatch.Execute(ref watch))
-				Board.WatchAdd(watch);
-		}
-
-		private void btnEditWatch_Click(object sender, EventArgs e)
+		private void miWatchEdit_Click(object sender, EventArgs e)
 		{
 			foreach (DataGridViewRow r in Watch.SelectedRows)
 			{
@@ -132,6 +133,9 @@ namespace OpenInsider
 					Board.WatchUpdated(r.Index);
 			}
 		}
+
+
+
         
     }
 }
