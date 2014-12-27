@@ -22,9 +22,10 @@ namespace OpenInsider.Core
         public WatchFormat Format { get; set; }  // Displayed format
         public byte[] Value { get; set; }
 
-		public WatchedVar()
+		public WatchedVar(int Size = 0)
 		{
-			Value = new byte[0];
+			Value = new byte[Size];
+			TimeStamp = DateTime.Now;
 		}
 
         public string GetFormattedValue()
