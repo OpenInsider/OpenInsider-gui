@@ -9,23 +9,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Core.Files;
 
 namespace OpenInsider
 {
     public partial class frmMain : Form
     {
+		public ElfFile elf = null;
+
         public frmMain()
         {
             InitializeComponent();
-            Watch.RowCount = Board.ActiveWatches.Count;
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
             Board.Link.ConnectionChanged += Link_ConnectionChanged;
+			Board.WatchesUpdated += Board_ActiveWatchesUpdated;
 
             Link_ConnectionChanged(Board.Link, EventArgs.Empty);
+			Board_ActiveWatchesUpdated(null, -1);
+			
         }
+
+		private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Board.Link.ConnectionChanged -= Link_ConnectionChanged;
+			Board.WatchesUpdated -= Board_ActiveWatchesUpdated;
+		}
+
+		void Board_ActiveWatchesUpdated(object sender, int e)
+		{
+			if (e < 0)
+				Watch.RowCount = Board.Watches.Count;
+			else
+				Watch.UpdateCellValue(1, e);
+		}
 
         void Link_ConnectionChanged(object sender, EventArgs e)
         {
@@ -35,7 +54,10 @@ namespace OpenInsider
 
         private void Watch_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
-            WatchedVar var = Board.ActiveWatches[e.RowIndex];
+			if ((e.RowIndex < 0) || (e.RowIndex >= Board.Watches.Count))
+				return;
+
+            WatchedVar var = Board.Watches[e.RowIndex];
 
             switch (e.ColumnIndex)
             {
@@ -44,9 +66,7 @@ namespace OpenInsider
                 case 2: e.Value = string.Format("0x{0:X8}", var.Address); break;
                 case 3: e.Value = var.Period.ToString(); break;
             }
-        }
-
-        
+        }        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -62,14 +82,7 @@ namespace OpenInsider
                 Board.Link.Close();
             else
                 Board.Link.Open();
-
-            
-        }
-
-        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            
-        }
+        }        
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -81,16 +94,41 @@ namespace OpenInsider
             if (!Board.Link.IsOpen)
                 return;
 
-            for (int i = 0; i < Board.ActiveWatches.Count; i++ )
-            {
-                if (Protocol.ReadWatch(Board.ActiveWatches[i]))
-                    Watch.UpdateCellValue(1, i);
-            }
-
-            
-
+			Board.Poll();
         }
 
+		private void button4_Click(object sender, EventArgs e)
+		{
+			using (OpenFileDialog ofd = new OpenFileDialog())
+			{
+				ofd.Filter = "Elf files (*.elf)|*.elf";
+				if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+					return;
+
+				elf = new ElfFile(ofd.FileName);
+
+				MessageBox.Show("Load ELF OK");
+			}
+		}
+
+		private void btnRemoveWatch_Click(object sender, EventArgs e)
+		{
+			if (Watch.SelectedRows.Count != 1)
+				return;
+
+			foreach (DataGridViewRow r in Watch.SelectedRows)
+				Board.WatchRemove(r.Index);
+		}
+
+		private void btnNewWatch_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void btnEditWatch_Click(object sender, EventArgs e)
+		{
+
+		}
         
     }
 }
