@@ -17,11 +17,15 @@ namespace OpenInsider.Core
     {
         public string Name { get; set; }         // variable name
         public UInt32 Address { get; set; }      // address of var
-        public UInt32 Size { get; set; }         // size of var
         public DateTime TimeStamp { get; set; }  // time of last query
         public TimeSpan Period { get; set; }     // period of query
         public WatchFormat Format { get; set; }  // Displayed format
         public byte[] Value { get; set; }
+
+		public WatchedVar()
+		{
+			Value = new byte[0];
+		}
 
         public string GetFormattedValue()
         {
@@ -33,8 +37,8 @@ namespace OpenInsider.Core
 					break;					
 
 				case WatchFormat.UnsignedInt:
-					if ((Size > 0) && (Size <= 8))
-						return string.Format("0x{0:X"+(Size*2).ToString()+"}", AsUInt());
+					if ((Value.Length > 0) && (Value.Length <= 8))
+						return string.Format("0x{0:X"+(Value.Length*2).ToString()+"}", AsUInt());
 
 					/* Fall back to array */
 					break;

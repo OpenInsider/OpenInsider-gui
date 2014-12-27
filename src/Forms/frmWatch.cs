@@ -39,7 +39,7 @@ namespace OpenInsider
 			{
 				/* fill form edits */
 				frm.Address.Text = "0x" + var.Address.ToString("X8");
-				frm.DataSize.Text = var.Size.ToString();
+				frm.DataSize.Text = var.Value.Length.ToString();
 				frm.DataType.SelectedItem = var.Format;
 				frm.Period.Text = var.Period.ToString();
 
@@ -48,10 +48,9 @@ namespace OpenInsider
 
 				/* fill result */
 				var.Address = TryParseAddress(frm.Address.Text);
-				var.Size = uint.Parse(frm.DataSize.Text, CultureInfo.InvariantCulture);
+				var.Value = new byte[uint.Parse(frm.DataSize.Text, CultureInfo.InvariantCulture)];
 				var.Period = TimeSpan.Parse(frm.Period.Text, CultureInfo.InvariantCulture);
 				var.Format = (WatchFormat)frm.DataType.SelectedItem;
-				var.Value = new byte[var.Size];
 
 				return true;
 			}
