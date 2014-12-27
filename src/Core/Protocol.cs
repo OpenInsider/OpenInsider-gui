@@ -233,11 +233,30 @@ namespace OpenInsider.Core
 
         public static bool ReadWatch(WatchedVar v)
         {
-            byte[] val = v.Value;
+			DateTime now = DateTime.Now;
+			if (v.TimeStamp + v.Period > now)
+				return false;
 
-            v.TimeStamp = DateTime.Now;
-            if (!Protocol.ReadMem32Ex(v.Address, ref val))
-                return false;
+			v.TimeStamp = now;
+
+            byte[] val = v.Value;
+			if (val.Length == 4)
+			{
+				if (!Protocol.ReadMem32Ex(v.Address, ref val))
+					return false;
+			}
+			else if (val.Length == 2)
+			{
+				if (!Protocol.ReadMem16Ex(v.Address, ref val))
+					return false;
+			}
+			else if (val.Length == 1)
+			{
+				if (!Protocol.ReadMem8Ex(v.Address, ref val[0]))
+					return false;
+			}
+			else
+				return false; /* noncompatible size of var, use read memory instead */
             
             v.Value = val;            
             return true;            
